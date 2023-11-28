@@ -140,6 +140,7 @@ n = 1;
        ro = rn;
        to = tn;
        rn = b*ro - k / (2*pi) * sin(2*pi*mod(to,1));
+       
        tn = to + Omega + rn;    
     end   
     
@@ -151,6 +152,7 @@ n = 1;
         xx = mod(to,1);
         if(Map==0) subplot(1,2,2);  end
         plot(xx,yy,'.k');
+        % xx
         pause(0.01)
     elseif(Picture==2)
             % plot theta_dot vs theta

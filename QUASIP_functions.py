@@ -3,14 +3,16 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+from IPython.display import Video
+
 
 
 # Define the main function
 def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
     global h
     animsteps = 32
-
-    Map = 0 
 
     # Initialization of variables
     h = 2 * np.pi / (animsteps * Omega)  # Step size calculation
@@ -93,16 +95,19 @@ def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
 
             tn = xc[0] / (2 * np.pi)
             rn = xc[1]
-        else:
+        elif Map == 1:                
             # Map is switched on
             ro = rn
             to = tn
             rn = b * ro - k / (2 * np.pi) * np.sin(2 * np.pi * (to % 1))
+            # print('rn = ', rn, 'ro = ', ro, 'to = ', to, 'tn = ', tn)
             tn = to + Omega + rn
             
         
         # Check if Picture is set to 1
         if Picture == 1:
+            if n == 1:
+                xx = [0, 0]
             yy[0] = tn % 1
             xx[0] = to % 1
             
@@ -125,6 +130,134 @@ def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
 
     return positions_1, positions_2, positions_4, positions_3
 
+
+
+def quasip_anim(Pendulum, Circle_map, Theta_dot, Torus, Map, Picture):
+    Torus_array = np.array(Torus)
+
+    if Map == 0:
+        # Create figure and axis
+        fig, axs = plt.subplots(1, 2)  # Create 2 subplots
+
+        axs[0].set_xlim(-1.5, 1.5)
+        axs[0].set_ylim(-1.5, 1.5)
+        axs[0].set_aspect('equal')
+
+        # Initialization function for the animation
+        def init():
+            red_dot.set_data([], [])
+            pluses.set_data([], [])
+            blue_line.set_data([], [])
+
+            # axs[1].clear()  # Clear the second subplot
+            return red_dot, pluses, blue_line,
+        # Update function for the animation
+        def update(frame):
+            # Get the current position
+            b1, b2 = Pendulum[frame]
+            # Set the red dot's data as a tuple
+            red_dot.set_data((b1,), (b2,))
+            pluses.set_data([0], [0])  # Pass a list or a tuple to set_data
+            blue_line.set_data([0, b1,], [0, b2,])
+            if Picture == 1:
+                if frame % 32 == 0:  
+                    frame2 = frame // 32  
+                    if frame2 > 0:  
+                        xx_r, yy_r = zip(*Circle_map[0:frame2])
+                        axs[1].clear()  
+                        axs[1].scatter(xx_r, yy_r, s=25, color='k')  
+                        axs[1].set_xlim(0, 1)
+                        axs[1].set_ylim(0, 1) 
+                        axs[1].set_aspect('equal')
+
+            elif Picture == 2:
+                if frame % 32 == 0:
+                    frame2 = frame // 32
+                    if frame2 > 0:
+                        xx_t, yy_t = zip(*Theta_dot[0:frame2])
+                        axs[1].clear()  # Clear the second subplot  
+                        axs[1].scatter(xx_t, yy_t, s=25, color='k')
+                        axs[1].set_xlim(0, 1)
+                        # axs[1].set_ylim(0, 3)
+                        axs[1].set_aspect('equal')            
+
+            elif Picture == 3:
+                xline, yline = Torus_array[frame, 0, :], Torus_array[frame, 1, :]
+                axs[1].plot(xline, yline, '-k', linewidth=1)
+                axs[1].set_xlim(0, 1)
+                axs[1].set_ylim(0, 1) 
+                axs[1].set_aspect('equal')
+
+            return red_dot, pluses, blue_line,
+        
+                
+        # Create a red dot plot element
+        red_dot, = axs[0].plot([], [], 'r.', markersize=25)
+        pluses, = axs[0].plot([], [], 'b+', markersize=10)
+        blue_line, = axs[0].plot([], [], 'b-')
+
+        if Picture == 1:
+            # black_dot, = axs[1].plot([], [], 'k.', markersize=10)
+            black_dot = axs[1].scatter([], [], s=25, color='k')
+            axs[1].set_xlim(0, 1)
+            axs[1].set_ylim(0, 1) 
+            axs[1].set_aspect('equal')
+
+        elif Picture == 2:
+            black_dot = axs[1].scatter([], [], s=25, color='k')
+            axs[1].set_xlim(0, 1)
+            axs[1].set_ylim(0, 1) 
+            axs[1].set_aspect('equal')
+
+        elif Picture == 3:
+            black_line = axs[1].plot([], [], '-k', linewidth=1)
+            axs[1].set_xlim(0, 1)
+            axs[1].set_ylim(0, 1)
+            axs[1].set_aspect('equal')
+
+        # Create the animation
+        ani = FuncAnimation(fig, update, frames=range(len(Pendulum)), init_func=init, blit=True, interval=30)
+        # HTML(ani.to_html5_video().replace('<video ', '<video autoplay '))
+
+
+        if Picture == 1:
+            ani.save('animation_Circle_map.mp4')
+            Video('animation_Circle_map.mp4')
+        elif Picture == 2:
+            ani.save('animation_Theta_dot.mp4')
+            Video('animation_Theta_dot.mp4')
+        elif Picture == 3:
+            ani.save('animation_Torus.mp4')
+            Video('animation_Torus.mp4')    
+
+    elif Map == 1:
+        # Create figure and axis
+        fig, axs = plt.subplots(1, 1)  # Create 2 subplots
+
+        axs.set_xlim(0, 1)
+        axs.set_ylim(0, 1)
+        axs.set_aspect('equal')
+
+        if Picture == 1:
+            xx_r, yy_r = zip(*Circle_map[:])
+            # axs.clear()  # Clear the second subplot
+            axs.scatter(xx_r, yy_r, s=25, color='k')  # Redraw the scatter plot
+            axs.set_xlim(0, 1)
+            axs.set_ylim(0, 1) 
+            axs.set_aspect('equal')
+            # print(xx_r, yy_r)
+
+        elif Picture == 2:
+            xx_t, yy_t = zip(*Theta_dot[:])
+            axs.clear()  # Clear the second subplot  
+            axs.scatter(xx_t, yy_t, s=25, color='k')
+            axs.set_xlim(0, 1)
+            # axs[1].set_ylim(0, 3)
+            axs.set_aspect('equal')            
+        elif Picture == 3:
+            print('No picture for this map')
+
+        plt.show()
 
 
 
@@ -180,8 +313,6 @@ def stopf(event):
     # Event handler for the stop button
     # In a GUI application, this would terminate the event loop or close the window
     pass  # Placeholder, functionality depends on GUI framework used
-
-
 
 def init_figure():
     # Clear current figure

@@ -70,7 +70,7 @@ n = 1;
     if(Map==0)
             b1 =  sin(xc(1));
             b2 = -cos(xc(1));
-            b1
+            
             % plot the current orientaion of the pendulum
             to = tn;
             xx = 0;
@@ -139,6 +139,7 @@ n = 1;
     else % Map is switched on
        ro = rn;
        to = tn;
+       to
        rn = b*ro - k / (2*pi) * sin(2*pi*mod(to,1));
        tn = to + Omega + rn;    
     end   
@@ -151,13 +152,15 @@ n = 1;
         xx = mod(to,1);
         if(Map==0) subplot(1,2,2);  end
         plot(xx,yy,'.k');
+        xx
         pause(0.01)
     elseif(Picture==2)
             % plot theta_dot vs theta
         yy = rn;
         xx = mod(tn,1);
         if(Map==0) subplot(1,2,2);  end
-        plot(xx,yy,'.k');   
+        plot(xx,yy,'.k');  
+        yy
         pause(0.01)
     end
    
