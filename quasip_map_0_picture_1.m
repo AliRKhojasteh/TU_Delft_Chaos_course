@@ -21,7 +21,7 @@ if(Map==0)
     A         = 1.4; 
     B         = 1; 
     Omega     = 1.76; 
-    Picture   = 1; 
+    Picture   = 3; 
 end
 
     fprintf('Press stop button to quit this run\n');

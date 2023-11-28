@@ -14,7 +14,7 @@ def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
 
     # Initialization of variables
     h = 2 * np.pi / (animsteps * Omega)  # Step size calculation
-    print('Step size is ', h)
+    # print('Step size is ', h)
     
     # Initial state vector
     # xc = np.array([0.3 * 2 * np.pi, 0.3, 0])
@@ -37,6 +37,8 @@ def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
     positions_1 = []
     positions_2 = []
     positions_3 = []
+    positions_4 = []
+
     while n < nit:
         if Map == 0:
             b1 = np.sin(xc[0])
@@ -89,11 +91,14 @@ def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
                     xx[0], yy[0] = xx[1], yy[1]
 
 
-
-
-
             tn = xc[0] / (2 * np.pi)
             rn = xc[1]
+        else:
+            # Map is switched on
+            ro = rn
+            to = tn
+            rn = b * ro - k / (2 * np.pi) * np.sin(2 * np.pi * (to % 1))
+            tn = to + Omega + rn
             
         
         # Check if Picture is set to 1
@@ -111,11 +116,14 @@ def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
             # Plot the 1D map
             # ax.plot(xx, yy, '.k')
             # plt.pause(0.01)  # Pause to update the plot
+        elif Picture == 2:
+            yy[0] = rn
+            xx[0] = tn % 1
+            positions_4.append((xx[0], yy[0]))
 
-            
         n += 1        
 
-    return positions_1, positions_2, positions_3
+    return positions_1, positions_2, positions_4, positions_3
 
 
 

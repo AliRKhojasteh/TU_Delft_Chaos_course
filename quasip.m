@@ -157,7 +157,8 @@ n = 1;
         yy = rn;
         xx = mod(tn,1);
         if(Map==0) subplot(1,2,2);  end
-        plot(xx,yy,'.k');   
+        plot(xx,yy,'.k');  
+        yy
         pause(0.01)
     end
    
