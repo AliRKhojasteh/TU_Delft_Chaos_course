@@ -5,6 +5,123 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+# Define the main function
+def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
+    global h
+    animsteps = 32
+
+    Map = 0 
+
+    # Initialization of variables
+    h = 2 * np.pi / (animsteps * Omega)  # Step size calculation
+    print('Step size is ', h)
+    
+    # Initial state vector
+    # xc = np.array([0.3 * 2 * np.pi, 0.3, 0])
+    xc = np.array([0.3 * 2 * np.pi, 0.3, 0])
+
+    # yy = xc[0] / (2 * np.pi)  # Normalizing the first element of xc
+    yy = [xc[0] / (2 * np.pi), 0]  # Normalizing the first element of xc and initializing the second element
+
+    tn = yy[0]
+    rn = 0.3
+    t = 0
+
+    # Warning if Map is on in combination with Picture 3
+    if Map == 1 and Picture == 3:
+        print('The option Map is not compatible with Picture option 3, Picture option is set to 1')
+        Picture = 1
+    
+    n = 1
+    nit = 20
+    positions_1 = []
+    positions_2 = []
+    positions_3 = []
+    while n < nit:
+        if Map == 0:
+            b1 = np.sin(xc[0])
+            b2 = -np.cos(xc[0])
+
+            # print('b1 = ', b1, 'b2 = ', b2)
+            to = tn
+            # xx=0
+            xx = [0, 0]  # Initializing xx as a list with two elements
+
+            # Update state using Runge-Kutta method
+            for i in range(animsteps):
+                t += h
+                xc = Runge_test(xc,alpha,beta,gamma,A,B,Omega,h)
+                b1 = np.sin(xc[0])
+                b2 = -np.cos(xc[0])            
+                positions_1.append((b1, b2))  # Append a tuple of (b1, b2) to the list
+
+                
+                if Picture == 3:
+                    # 2D torus plot (theta vs time)
+                    tn = xc[0] / (2 * np.pi)
+                    yy[1] = tn % 1
+                    xx[1] = xx[0] + h * Omega / (2 * np.pi)
+
+                    if yy[1] < 0:
+                        yy[1] += 1.0
+
+                    # Periodic boundary conditions
+                    if yy[1] > (yy[0] + 0.5):
+                        xtemp = xx[0] - yy[0] * (xx[1] - xx[0]) / (yy[1] - 1 - yy[0])
+                        xline = [xx[0], xtemp]
+                        yline = [yy[0], 0]
+                        # axs[1].plot(xline, yline, '-k')
+                        positions_3.append((xline, yline))
+                        xx[0], yy[0] = xtemp, 1
+                    elif yy[1] < (yy[0] - 0.5):
+                        xtemp = xx[0] + (1 - yy[0]) * (xx[1] - xx[0]) / (yy[1] + 1 - yy[0])
+                        xline = [xx[0], xtemp]
+                        yline = [yy[0], 1]
+                        # axs[1].plot(xline, yline, '-k')
+                        positions_3.append((xline, yline))
+                        xx[0], yy[0] = xtemp, 0
+
+                    # Update the lines for the current frame
+                    xline = [xx[0], xx[1]]
+                    yline = [yy[0], yy[1]]
+                    # axs[1].plot(xline, yline, '-k')
+                    positions_3.append((xline, yline))
+                    xx[0], yy[0] = xx[1], yy[1]
+
+
+
+
+
+            tn = xc[0] / (2 * np.pi)
+            rn = xc[1]
+            
+        
+        # Check if Picture is set to 1
+        if Picture == 1:
+            yy[0] = tn % 1
+            xx[0] = to % 1
+            
+            positions_2.append((xx[0], yy[0]))
+            # # Create subplot only if Map is 0
+            # if Map == 0:
+            #     ax = plt.subplot(1, 2, 2)
+            # else:
+            #     ax = plt.gca()  # Get current axis
+
+            # Plot the 1D map
+            # ax.plot(xx, yy, '.k')
+            # plt.pause(0.01)  # Pause to update the plot
+
+            
+        n += 1        
+
+    return positions_1, positions_2, positions_3
+
+
+
+
+
+
 def equations(x,alpha,beta,gamma,A,B,Omega):
     # Define the differential equations
     f = np.zeros(3)

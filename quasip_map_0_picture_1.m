@@ -16,7 +16,7 @@ Map = 0
 
 if(Map==0)   
     alpha     = 1;
-    beta      = 1.576; 
+    beta      = 20; %1.576; 
     gamma     = 1; 
     A         = 1.4; 
     B         = 1; 
@@ -68,7 +68,56 @@ n = 1;
                 plot(0, 0, '+', 'MarkerSize',10);
                 plot([0 b1],[0 b2], 'b-');
                 plot(b1, b2, 'r.', 'MarkerSize',25);
-                pause(0.01)          
+                pause(0.01)      
+
+
+
+              if(Picture==3)
+                    % plot 2d-torus (theta vs time)
+                    tn = xc(1)/(2*pi);
+                    yy(2) = mod(tn,1);
+                    xx(2) = xx(1)+h*Omega/(2*pi);
+         
+                    if(yy(2)<0) yy(2) = yy(2) + 1.0; end
+
+                    %periodic bc
+                    if( yy(2) > (yy(1)+0.5) )
+                          xtemp = xx(1) - yy(1) * (xx(2) - xx(1)) / (yy(2)-1-yy(1));
+                          xline(1) = xx(1);
+                          xline(2) = xtemp;
+                          yline(1) = yy(1);
+                          yline(2) = 0;
+                          subplot(1,2,2);
+                          plot(xline,yline,'-k');
+                          % xline
+                          xx(1) = xtemp;
+                          yy(1) = 1;
+                    elseif(yy(2) < (yy(1)-0.5))
+                          xtemp = xx(1) + (1-yy(1)) * (xx(2)-xx(1)) / (yy(2)+1-yy(1));
+                          xline(1) = xx(1);
+                          xline(2) = xtemp;
+                          yline(1) = yy(1);
+                          yline(2) = 1;
+                          subplot(1,2,2);
+                          plot(xline,yline,'-k');
+                          % xline
+                          xx(1) = xtemp;
+                          yy(1) = 0;
+                    end
+
+                    xline = xx;
+                    yline = yy;
+                    subplot(1,2,2);
+                    plot(xline,yline,'-k');
+                    % xline
+                    subplot(1,2,1);
+                    xx(1) = xx(2);
+                    yy(1) = yy(2);
+        
+              end
+
+
+
         end
         
              tn = xc(1)/(2*pi);  
