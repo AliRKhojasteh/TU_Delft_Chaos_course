@@ -1,7 +1,7 @@
 % program : quasip.m
 %
 
-function quasip()
+% function B=quasip_map_0_picture_1()
     close all
     clear all
 
@@ -12,38 +12,16 @@ function quasip()
     
 % Choose first between map and ode 
 fprintf('Choose Map=1 for the map and Map=0 for the differential equation \n')
-Map = input('Map =' );
-fprintf('Give now the desired parameters. Pressing enter will set the standard parameters \n')
-if( isempty(Map) )  
-    error('you have to set Map to 0 or 1') 
-end
+Map = 0
 
 if(Map==0)   
-    alpha     = input('alpha = '); 
-    beta      = input('beta  = ');         % units ?
-    gamma     = input('gamma = ');
-    A         = input('A = ');
-    B         = input('B = ');
-    Omega     = input('Omega = ');
-    Picture   = input('Picture = ');
-  
-    if( isempty(alpha) )    alpha = 1;     end
-    if( isempty(beta) )     beta = 1.576;  end
-    if( isempty(gamma) )    gamma = 1;     end    
-    if( isempty(A) )        A = 1.4;       end
-    if( isempty(B) )        B = 1;         end
-    if( isempty(Omega) )    Omega = 1.76;  end
-    if( isempty(Picture) )  Picture = 1;   end
-else
-    Omega     = input('Omega = ');
-    k         = input('k = ');
-    b         = input('b = ');
-    Picture   = input('Picture = ');
-
-    if( isempty(Omega) )    Omega = 0.292;  end
-    if(isempty(k))          k     = 1;      end
-    if(isempty(b))          b     = 0.25;   end
-    if( isempty(Picture) )  Picture = 1;    end
+    alpha     = 1;
+    beta      = 1.576; 
+    gamma     = 1; 
+    A         = 1.4; 
+    B         = 1; 
+    Omega     = 1.76; 
+    Picture   = 1; 
 end
 
     fprintf('Press stop button to quit this run\n');
@@ -65,12 +43,15 @@ H = init_figure();
     
 nit = 20;
 n = 1;
+
  while (n<nit)
         
     if(Map==0)
             b1 =  sin(xc(1));
             b2 = -cos(xc(1));
-            b1
+            B_coef(n,1)=b1;
+            B_coef(n,2)=b2;
+
             % plot the current orientaion of the pendulum
             to = tn;
             xx = 0;
@@ -87,60 +68,11 @@ n = 1;
                 plot(0, 0, '+', 'MarkerSize',10);
                 plot([0 b1],[0 b2], 'b-');
                 plot(b1, b2, 'r.', 'MarkerSize',25);
-                pause(0.01)
-            
-               
-              if(Picture==3)
-                    % plot 2d-torus (theta vs time)
-                    tn = xc(1)/(2*pi);
-                    yy(2) = mod(tn,1);
-                    xx(2) = xx(1)+h*Omega/(2*pi);
-         
-                    if(yy(2)<0) yy(2) = yy(2) + 1.0; end
-
-                    %periodic bc
-                    if( yy(2) > (yy(1)+0.5) )
-                          xtemp = xx(1) - yy(1) * (xx(2) - xx(1)) / (yy(2)-1-yy(1));
-                          xline(1) = xx(1);
-                          xline(2) = xtemp;
-                          yline(1) = yy(1);
-                          yline(2) = 0;
-                          subplot(1,2,2);
-                          plot(xline,yline,'-k');
-                          xx(1) = xtemp;
-                          yy(1) = 1;
-                    elseif(yy(2) < (yy(1)-0.5))
-                          xtemp = xx(1) + (1-yy(1)) * (xx(2)-xx(1)) / (yy(2)+1-yy(1));
-                          xline(1) = xx(1);
-                          xline(2) = xtemp;
-                          yline(1) = yy(1);
-                          yline(2) = 1;
-                          subplot(1,2,2);
-                          plot(xline,yline,'-k');
-                          xx(1) = xtemp;
-                          yy(1) = 0;
-                    end
-
-                    xline = xx;
-                    yline = yy;
-                    subplot(1,2,2);
-                    plot(xline,yline,'-k');
-                    subplot(1,2,1);
-                    xx(1) = xx(2);
-                    yy(1) = yy(2);
-        
-              end
-          
+                pause(0.01)          
         end
         
              tn = xc(1)/(2*pi);  
              rn = xc(2);
-
-    else % Map is switched on
-       ro = rn;
-       to = tn;
-       rn = b*ro - k / (2*pi) * sin(2*pi*mod(to,1));
-       tn = to + Omega + rn;    
     end   
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
@@ -152,14 +84,7 @@ n = 1;
         if(Map==0) subplot(1,2,2);  end
         plot(xx,yy,'.k');
         pause(0.01)
-    elseif(Picture==2)
-            % plot theta_dot vs theta
-        yy = rn;
-        xx = mod(tn,1);
-        if(Map==0) subplot(1,2,2);  end
-        plot(xx,yy,'.k');   
-        pause(0.01)
-    end
+    end  
    
     n = n+1;
  end
@@ -167,7 +92,7 @@ n = 1;
 
  error('you pressed stop :( ')
 
- end
+ % end
 
 
 
