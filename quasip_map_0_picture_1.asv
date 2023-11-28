@@ -1,7 +1,7 @@
 % program : quasip.m
 %
 
-function quasip()
+% function B=quasip_map_0_picture_1()
     close all
     clear all
 
@@ -43,14 +43,15 @@ H = init_figure();
     
 nit = 20;
 n = 1;
-count=
+
  while (n<nit)
         
     if(Map==0)
-            count=count+1;
             b1 =  sin(xc(1));
             b2 = -cos(xc(1));
-            b1
+            B_coef(n,1)=b1;
+            B_coef(n,2)=b2;
+
             % plot the current orientaion of the pendulum
             to = tn;
             xx = 0;
@@ -91,7 +92,7 @@ count=
 
  error('you pressed stop :( ')
 
- end
+ % end
 
 
 

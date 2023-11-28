@@ -70,7 +70,7 @@ n = 1;
     if(Map==0)
             b1 =  sin(xc(1));
             b2 = -cos(xc(1));
-            b1
+            
             % plot the current orientaion of the pendulum
             to = tn;
             xx = 0;
