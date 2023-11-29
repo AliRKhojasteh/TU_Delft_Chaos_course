@@ -1,12 +1,9 @@
 
 #functions
-
-import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from IPython.display import Video
-
 
 
 # Define the main function
@@ -130,18 +127,22 @@ def quasip_test(Map, alpha, beta, gamma, A, B, Omega, Picture, k, b):
 
     return positions_1, positions_2, positions_4, positions_3
 
-
-
 def quasip_anim(Pendulum, Circle_map, Theta_dot, Torus, Map, Picture):
     Torus_array = np.array(Torus)
 
     if Map == 0:
         # Create figure and axis
-        fig, axs = plt.subplots(1, 2)  # Create 2 subplots
+        fig, axs = plt.subplots(1, 2, figsize=(20, 10))  # Create 2 subplots
+        fsize = 28
 
         axs[0].set_xlim(-1.5, 1.5)
         axs[0].set_ylim(-1.5, 1.5)
         axs[0].set_aspect('equal')
+        axs[0].set_xlabel('x', fontsize=fsize*1.25)
+        axs[0].set_ylabel('y', fontsize=fsize*1.25)
+        axs[0].set_title('Pendulum', fontsize=fsize, fontweight='bold')
+        axs[0].set_frame_on(True)
+        axs[0].tick_params(axis='both', which='major', labelsize=fsize)
 
         # Initialization function for the animation
         def init():
@@ -165,10 +166,14 @@ def quasip_anim(Pendulum, Circle_map, Theta_dot, Torus, Map, Picture):
                     if frame2 > 0:  
                         xx_r, yy_r = zip(*Circle_map[0:frame2])
                         axs[1].clear()  
-                        axs[1].scatter(xx_r, yy_r, s=25, color='k')  
+                        axs[1].scatter(xx_r, yy_r, s=50, color='k')  
                         axs[1].set_xlim(0, 1)
                         axs[1].set_ylim(0, 1) 
                         axs[1].set_aspect('equal')
+                        axs[1].set_xlabel(r'$\theta_n$', fontsize=fsize)
+                        axs[1].set_ylabel(r'$\theta_{n+1}$', fontsize=fsize)
+                        axs[1].set_title('Circle map', fontsize=fsize, fontweight='bold')
+                        axs[1].tick_params(axis='both', which='major', labelsize=fsize)   
 
             elif Picture == 2:
                 if frame % 32 == 0:
@@ -176,25 +181,36 @@ def quasip_anim(Pendulum, Circle_map, Theta_dot, Torus, Map, Picture):
                     if frame2 > 0:
                         xx_t, yy_t = zip(*Theta_dot[0:frame2])
                         axs[1].clear()  # Clear the second subplot  
-                        axs[1].scatter(xx_t, yy_t, s=25, color='k')
+                        axs[1].scatter(xx_t, yy_t, s=75, color='k')
                         axs[1].set_xlim(0, 1)
                         # axs[1].set_ylim(0, 3)
-                        axs[1].set_aspect('equal')            
+                        axs[1].set_aspect('equal')  
+                        axs[1].set_xlabel(r'$\theta_n$', fontsize=fsize)
+                        axs[1].set_ylabel(r'$\dot{\theta_n}$', fontsize=fsize)   
+                        axs[1].set_title('Theta dot', fontsize=fsize, fontweight='bold')  
+                        axs[1].tick_params(axis='both', which='major', labelsize=fsize)
+
 
             elif Picture == 3:
                 xline, yline = Torus_array[frame, 0, :], Torus_array[frame, 1, :]
-                axs[1].plot(xline, yline, '-k', linewidth=1)
+                axs[1].plot(xline, yline, '-k', linewidth=5)
                 axs[1].set_xlim(0, 1)
                 axs[1].set_ylim(0, 1) 
                 axs[1].set_aspect('equal')
+                axs[1].set_xlabel('t mod (2π / Ω)', fontsize=fsize)
+                axs[1].set_ylabel('θ mod 2π', fontsize=fsize)
+                axs[1].set_title('Torus', fontsize=fsize, fontweight='bold')
+                axs[1].tick_params(axis='both', which='major', labelsize=fsize)
+
 
             return red_dot, pluses, blue_line,
         
                 
         # Create a red dot plot element
-        red_dot, = axs[0].plot([], [], 'r.', markersize=25)
-        pluses, = axs[0].plot([], [], 'b+', markersize=10)
-        blue_line, = axs[0].plot([], [], 'b-')
+        blue_line, = axs[0].plot([], [], color='#4169e1', linewidth=5)
+        red_dot, = axs[0].plot([], [], '.', color='#8B0000', markersize=50)
+        pluses, = axs[0].plot([], [], '+', color='black', markersize=30, markeredgewidth=3)
+
 
         if Picture == 1:
             # black_dot, = axs[1].plot([], [], 'k.', markersize=10)
@@ -232,7 +248,7 @@ def quasip_anim(Pendulum, Circle_map, Theta_dot, Torus, Map, Picture):
 
     elif Map == 1:
         # Create figure and axis
-        fig, axs = plt.subplots(1, 1)  # Create 2 subplots
+        fig, axs = plt.subplots(1, 1, figsize=(10, 10))  # Create 2 subplots
 
         axs.set_xlim(0, 1)
         axs.set_ylim(0, 1)
@@ -258,10 +274,6 @@ def quasip_anim(Pendulum, Circle_map, Theta_dot, Torus, Map, Picture):
             print('No picture for this map')
 
         plt.show()
-
-
-
-
 
 def equations(x,alpha,beta,gamma,A,B,Omega):
     # Define the differential equations
