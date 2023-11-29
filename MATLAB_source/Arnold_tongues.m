@@ -4,7 +4,7 @@ clear all
 close all
 
 
-Niter = 10;
+Niter = 100;
 t0 = 0;
 
 Win = [0 1/2 3/5 8/13 5/8 2/3 1 Inf];
